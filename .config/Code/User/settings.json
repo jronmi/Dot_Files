@@ -1,0 +1,29 @@
+{
+    "workbench.colorTheme": "Abyss",
+    "sshfs.configs": [
+        {
+            "name": "sshfs",
+            "username": "jamesrr",
+            "host": "athena.dialup.mit.edu",
+            "root": "~/"
+        }
+    ],
+    "gitlens.hovers.currentLine.over": "line",
+    "workbench.sideBar.location": "right",
+    "githubIssues.queries": [
+        {
+            "label": "My Issues",
+            "query": "default"
+        },
+        {
+            "label": "Created Issues",
+            "query": "author:${user} state:open repo:${owner}/${repository} sort:created-desc"
+        },
+        {
+            "label": "Recent Issues",
+            "query": "state:open repo:${owner}/${repository} sort:updated-desc"
+        }
+    ],
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "window.zoomLevel": -1
+}

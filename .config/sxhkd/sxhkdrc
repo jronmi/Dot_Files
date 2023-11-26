@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -x sxhkd
+# quit/restart bspwm
+super + alt + {q,r}
+	bspc {quit,wm -r}
+super + p
+    	bspc query -N -d | xargs -I % bspc node % -B
+
+# program launcher
+super + r
+	dmenu_run
+# terminal emulator
+super + z
+	hyper
+# firefox 
+super + x
+	firefox 
+super + c
+	okular
+super + v
+	vlc
+super + b
+	./Fiji.app/ImageJ-linux64
+super + a
+	arandr
+super + s
+	spotify
+super + d
+	nautilus
+super + e
+	(nohup thunderbird &) ; (nohup morgen &)
+# temporary - remove after fall semester
+super + g
+	gpclient
+super + h
+	vmware-view 
+
+
+# close and kill window / application
+super + {_,shift + }w
+	bspc node -{c,k}
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+# expand a window by moving one of its side outward
+super + alt + {h,j,k,l}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+# contract a window by moving one of its side inward
+super + alt + shift + {h,j,k,l}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+# focus the next/previous window in the current desktop
+super + {_,shift + }Tab
+	bspc node -f {next,prev}.local.!hidden.window
+# alternate between the tiled and monocle layout
+super + space
+	bspc desktop -l next
+
+super + u
+        bspc monitor eDP-1 -d I II III IV V VI VII VIII IX X
+        for d in $(bspc query -m DP-1-3 -D); do bspc desktop $d --to-monitor eDP-1; done
+        bspc monitor DP-1-3 --remove
+	xrandr --output eDP-1 --mode 2560x1440 --pos 0x0 --rotate normal --output DP-1 --off --output HDMI-1 --off --output DP-2 --off --output HDMI-2 --off --output DP-1-1 --off --output DP-1-2 --off --output DP-1-3 --off
+
+# focus the last node/desktop
+super + grave
+	bspc desktop -f last
+# focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+# focus the next/previous desktop in the current monitor
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+
+# set the window state
+super + t
+    if [ -z "$(bspc query -N -n focused.floating)" ]; then \
+        bspc node focused -t floating; \
+    else \
+        bspc node focused -t tiled; \
+    fi

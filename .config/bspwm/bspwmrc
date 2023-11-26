@@ -1,0 +1,60 @@
+#! /bin/bash
+
+# use to see monitors in testing
+# bspc wm -d | jq '.monitors[].rectangle'
+
+
+# picom -f &
+nitrogen --restore &
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+# layout depending on specific monitor models
+monitors=$(hwinfo --monitor --short)
+echo "$monitors" >> ~/temp.txt
+
+if [[ $monitors == *"G34WQC"* ]]; then
+	xrandr --output eDP-1 --off --output DP-1 --off --output HDMI-1 --off --output DP-2 --off --output HDMI-2 --off --output DP-1-1 --off --output DP-1-3 --off --output DP-1-2 --primary --mode 3440x1440 --pos 0x0 --rotate normal
+	bspc monitor DP-1-2 -d I II III IV V VI VII VIII IX X
+	for d in $(bspc query -m eDP-1 -D); do bspc desktop $d --to-monitor DP-1-2; done
+	bspc monitor eDP-1 --remove
+elif [[ $monitors == *'DELL P2715Q'* ]]; then
+	xrandr --output eDP-1 --off --output DP-1 --off --output HDMI-1 --primary --mode 3840x2160 --pos 0x0 --rotate normal --output DP-2 --off --output HDMI-2 --off --output DP-1-1 --off --output DP-1-2 --off --output DP-1-3 --off
+	bspc monitor HDMI-1 -d I II III IV V VI VII VIII IX X
+	for d in $(bspc query -m eDP-1 -D); do bspc desktop $d --to-monitor HDMI-1; done
+	bspc monitor eDP-1 --remove
+
+else
+	xrandr --output eDP-1 --mode 2560x1440 --pos 0x0 --rotate normal --output DP-1 --off --output HDMI-1 --off --output DP-2 --off --output HDMI-2 --off --output DP-1-1 --off --output DP-1-2 --off --output DP-1-3 --off
+	bspc monitor eDP-1 -d I II III IV V VI VII VIII IX X
+	for d in $(bspc query -m DP-1-2 -D); do bspc desktop $d --to-monitor eDP-1; done
+	bspc monitor DP-1-2 --remove
+fi
+
+xsetroot -cursor_name left_ptr
+bspc config border_width         2
+bspc config window_gap          12
+bsp-layout set even
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+bspc rule -a Thunderbird desktop='^10'
+bspc rule -a Morgen desktop='^10'
+bspc rule -a Imagej state=floating
+
+# bspc remove_unplugged_monitors false
+
+# other startup
+xbindkeys
+# applets
+gpclient &
+nm-applet &
+pasystray &
+blueman-applet &
+
+# transparency
+compton &
+# reload polybar
+pkill polybar
+~/.config/polybar/launch.sh --colorblocks 2> /dev/null

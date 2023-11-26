@@ -1,0 +1,11 @@
+# local runtime files / dirs
+__pycache__/
+*/__pycache__/
+.git/
+.vscode/
+.python-version
+/venv/
+*.pt
+*.mp4
+*.zip
+experiments/experiments/
